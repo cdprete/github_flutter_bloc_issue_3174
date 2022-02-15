@@ -1,24 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:github_flutter_bloc_issue_3174/add_item/add_item_dialog.dart';
 import 'package:github_flutter_bloc_issue_3174/infrastracture/item_repository.dart';
 import 'package:github_flutter_bloc_issue_3174/item_list/item_list.dart';
 
-// This will be injected by GetIt as singleton
-final repository = ItemRepository();
+import 'item_list/bloc/item_list_bloc.dart';
 
 void main() {
-  runApp(const MaterialApp(home: MyApp()));
+  final itemRepository = ItemRepository();
+  runApp(MyApp(itemRepository: itemRepository));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({
+    Key? key,
+    required ItemRepository itemRepository,
+  })  : _itemRepository = itemRepository,
+        super(key: key);
+
+  final ItemRepository _itemRepository;
 
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return RepositoryProvider.value(
+      value: _itemRepository,
+      child: BlocProvider(
+        create: (_) => ItemListBloc(
+          itemRepository: _itemRepository,
+        ),
+        child: const MaterialApp(
+          home: MyAppView(),
+        ),
+      ),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppView extends StatefulWidget {
+  const MyAppView({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _MyAppViewState();
+}
+
+class _MyAppViewState extends State<MyAppView> {
   int currentIndex = 1;
+
+  Widget get body => currentIndex == 2 ? const ItemList() : const Placeholder();
+
+  FloatingActionButton? get floatingActionButton {
+    if (currentIndex == 2) {
+      return FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const AddItemDialog(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +91,4 @@ class _MyAppState extends State<MyApp> {
       floatingActionButton: floatingActionButton,
     );
   }
-
-  FloatingActionButton? get floatingActionButton => currentIndex == 2
-      ? FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => const AddItemDialog(),
-          ),
-        )
-      : null;
-
-  Widget get body => currentIndex == 2 ? const ItemList() : const Placeholder();
 }

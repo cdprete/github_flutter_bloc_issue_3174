@@ -6,3 +6,9 @@ abstract class ItemListEvent {
 }
 
 class FetchItemList extends ItemListEvent {}
+
+class AddNewItem extends ItemListEvent {
+  const AddNewItem(this.toAdd);
+
+  final Item toAdd;
+}
