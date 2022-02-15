@@ -10,7 +10,7 @@ class ItemListBloc extends Bloc<ItemListEvent, ItemListState> {
   ItemListBloc({
     required ItemRepository itemRepository,
   })  : _itemRepository = itemRepository,
-        super(ItemListInitial()) {
+        super(const ItemListInitial()) {
     on<FetchItemList>(_onFetchItemList);
     on<AddNewItem>(_onAddNewItem);
   }
