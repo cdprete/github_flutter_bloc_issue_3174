@@ -5,17 +5,18 @@ abstract class ItemListState {
   const ItemListState();
 }
 
+class FetchingItemList extends ItemListState {}
+
 abstract class ItemListStateWithData extends ItemListState {
+  const ItemListStateWithData({required this.items});
+
   final List<Item> items;
-  const ItemListStateWithData(this.items);
 }
 
 class ItemListInitial extends ItemListStateWithData {
-  ItemListInitial() : super([]);
+  const ItemListInitial() : super(items: const []);
 }
 
-class FetchingItemList extends ItemListState {}
-
 class ItemListFetched extends ItemListStateWithData {
-  const ItemListFetched(List<Item> items) : super(items);
+  const ItemListFetched(List<Item> items) : super(items: items);
 }

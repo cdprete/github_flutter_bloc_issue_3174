@@ -1,9 +1,9 @@
 import 'dart:async';
 
 class ItemRepository {
-  final List<Item> data;
-
   ItemRepository() : data = [];
+
+  final List<Item> data;
 
   FutureOr<Item> addItem(Item item) async {
     data.add(item);
@@ -19,8 +19,9 @@ class ItemRepository {
 }
 
 class Item {
-  final String value;
   Item(this.value);
+
+  final String value;
 
   @override
   String toString() => value;

@@ -7,31 +7,27 @@ class ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ItemListBloc(),
-      child: BlocBuilder<ItemListBloc, ItemListState>(
-        builder: (context, state) {
-          if (state is ItemListInitial) {
-            // Very ugly but it works.
-            // BlocConsumer doesn't trigger the listener with the initial state which is what I was expecting
-            context.read<ItemListBloc>().fetchItemList();
-            return const SizedBox.shrink();
-          } else if (state is FetchingItemList) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            final items = (state as ItemListStateWithData).items;
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (_, index) => Padding(
-                child: Text(items[index].value),
-                padding: const EdgeInsets.symmetric(vertical: 5),
-              ),
-            );
-          }
-        },
-      ),
+    return BlocBuilder<ItemListBloc, ItemListState>(
+      builder: (context, state) {
+        if (state is FetchingItemList) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is ItemListFetched) {
+          final items = state.items;
+          return ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (_, index) => Padding(
+              child: Text(items[index].value),
+              padding: const EdgeInsets.symmetric(vertical: 5),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
