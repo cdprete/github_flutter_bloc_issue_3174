@@ -22,19 +22,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddItemBloc(),
+      create: (context) => AddItemBloc(context.read<ItemRepository>()),
       child: BlocConsumer<AddItemBloc, AddItemState>(
-        listenWhen: (_, state) => state is NewItemAdded,
         listener: (context, state) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "New item '${(state as NewItemAdded).addedItem}' added",
-              ),
-            ),
-          );
+          if (state is AddItemSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("New item '${state.item}' added")),
+            );
+          }
           Navigator.pop(context);
-          // Trigger here the refresh of the list in the ItemListWidget
         },
         builder: (context, state) => AlertDialog(
           title: const Text('Add item'),

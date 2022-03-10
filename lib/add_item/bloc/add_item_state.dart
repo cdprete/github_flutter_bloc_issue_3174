@@ -5,9 +5,12 @@ abstract class AddItemState {
   const AddItemState();
 }
 
-class AddItemInitial extends AddItemState {}
+class AddItemInitial extends AddItemState {
+  const AddItemInitial();
+}
 
-class NewItemAdded extends AddItemState {
-  final Item addedItem;
-  const NewItemAdded(this.addedItem);
+class AddItemSuccess extends AddItemState {
+  const AddItemSuccess(this.item);
+
+  final Item item;
 }

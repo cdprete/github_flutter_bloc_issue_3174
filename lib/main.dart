@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:github_flutter_bloc_issue_3174/add_item/add_item_dialog.dart';
 import 'package:github_flutter_bloc_issue_3174/infrastracture/item_repository.dart';
 import 'package:github_flutter_bloc_issue_3174/item_list/item_list.dart';
 
-// This will be injected by GetIt as singleton
-final repository = ItemRepository();
-
 void main() {
-  runApp(const MaterialApp(home: MyApp()));
+  runApp(RepositoryProvider(
+    create: (_) => ItemRepository(),
+    child: const MaterialApp(home: MyApp()),
+  ));
 }
 
 class MyApp extends StatefulWidget {

@@ -1,21 +1,15 @@
 import 'dart:async';
 
 class ItemRepository {
-  final List<Item> data;
+  final _controller = StreamController<List<Item>>.broadcast();
+  final List<Item> _data = [];
 
-  ItemRepository() : data = [];
-
-  FutureOr<Item> addItem(Item item) async {
-    data.add(item);
-
-    // This would be the added value (with a resolved ID for example)
-    return item;
+  void addItem(Item item) async {
+    _data.add(item);
+    _controller.add(_data);
   }
 
-  // This is actually paged in the real app
-  FutureOr<List<Item>> getAllItems() async {
-    return data;
-  }
+  Stream<List<Item>> get items => _controller.stream;
 }
 
 class Item {
