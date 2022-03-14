@@ -1,30 +1,29 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:github_flutter_bloc_issue_3174/infrastracture/item_repository.dart';
-import 'package:github_flutter_bloc_issue_3174/main.dart';
 import 'package:meta/meta.dart';
 
 part 'item_list_event.dart';
 part 'item_list_state.dart';
 
 class ItemListBloc extends Bloc<ItemListEvent, ItemListState> {
-  final ItemRepository _repository;
-
-  ItemListBloc()
-      : _repository = repository,
-        super(ItemListInitial()) {
-    on<FetchItemList>(_onFetchItemList);
+  ItemListBloc(ItemRepository repository) : super(const ItemListState()) {
+    on<ItemListChanged>(_onItemListChanged);
+    _subscription = repository.items.listen(
+      (items) => add(ItemListChanged(items: items)),
+    );
   }
 
-  void fetchItemList() {
-    add(FetchItemList());
+  late StreamSubscription<List<Item>> _subscription;
+
+  void _onItemListChanged(ItemListChanged event, Emitter<ItemListState> emit) {
+    emit(ItemListState(items: event.items));
   }
 
-  void _onFetchItemList(
-    FetchItemList event,
-    Emitter<ItemListState> emit,
-  ) async {
-    emit(FetchingItemList());
-    final items = await _repository.getAllItems();
-    emit(ItemListFetched(items));
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    return super.close();
   }
 }

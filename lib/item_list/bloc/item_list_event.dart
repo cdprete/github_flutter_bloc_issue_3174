@@ -5,4 +5,7 @@ abstract class ItemListEvent {
   const ItemListEvent();
 }
 
-class FetchItemList extends ItemListEvent {}
+class ItemListChanged extends ItemListEvent {
+  const ItemListChanged({required this.items});
+  final List<Item> items;
+}
